@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Inter", system-ui, sans-serif;
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Motion durations (tokens) */
+  --dur-fast: 160ms;
+  --dur-base: 320ms;
+  --dur-slow: 620ms;
+}
+
+@layer base {
+  * {
+    border-color: theme("colors.line");
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-900 text-primary-foreground font-sans antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Ambient page background: deep gradient + subtle grid + glow blobs */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(60% 50% at 85% -5%, rgba(34, 227, 214, 0.12), transparent 60%),
+      radial-gradient(50% 40% at 5% 10%, rgba(59, 130, 246, 0.1), transparent 60%),
+      linear-gradient(180deg, #00131b 0%, #001b26 45%, #00131b 100%);
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, #000 30%, transparent 80%);
+    pointer-events: none;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-ink-900;
+  }
+
+  ::selection {
+    background: rgba(34, 227, 214, 0.25);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-line bg-surface backdrop-blur-xl;
+  }
+  .glass-strong {
+    @apply border border-line bg-surface-strong backdrop-blur-2xl;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-accent via-accent-soft to-white bg-clip-text text-transparent;
+  }
+  .container-tight {
+    @apply mx-auto w-full max-w-3xl px-5 sm:px-6;
+  }
+
+  /* Marquee (evolution of legacy logoloop) */
+  .marquee-mask {
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Global reduced-motion safety net */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
